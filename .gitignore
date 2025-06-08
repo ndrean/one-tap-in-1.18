@@ -35,5 +35,9 @@ live_flight-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.cred.exs
+.formatter.exs
+
+/test/
 .env
 .cred.json
