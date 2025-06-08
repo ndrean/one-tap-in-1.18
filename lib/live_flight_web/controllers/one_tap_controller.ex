@@ -4,7 +4,7 @@ defmodule LiveFlightWeb.OneTapController do
   alias LiveFlight.Accounts
 
   def handle(conn, %{"credential" => jwt} = _params) do
-    case ExGoogleCerts.verified_identity(%{jwt: jwt})  do
+    case ExGoogleCerts.verified_identity(%{jwt: jwt}) do
       {:ok, profile} ->
         user =
           case Accounts.get_user_by_email(profile["email"]) do

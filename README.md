@@ -1,12 +1,28 @@
 # LiveFlight
 
-Use the code generator:
+Add Google One Tap into the Phoenix 1.18 authentication process.
+
+It has been installed with:
+
+```sh
+mix archive.install hex phx_new 1.8.0-rc.3 --force
+```
+
+> this `phx.gen.auth` ships a magic link support for login and registration.
+
+Source: <https://www.phoenixframework.org/blog/phoenix-1-8-released>
+
+## Code generator:
+
+Use the Phoenix code generator:
 
 ```sh
 mix phx.gen.auth Accounts User users
 ```
 
-Config setup:
+## Config
+
+### Google cloud setup
 
 - the Google CLIENT_ID that you obtained from the <https://console.cloud.google.com>
 
@@ -16,10 +32,11 @@ Path:
 - Authorized JavaScript origins: http://localhost:4000
 - Authorized redirect URIs: http://localhost:4000:google_auth 
 
-- the endpoint where Google will post the JWT in your config:
+### App config
+
+Set the Google credentials and endpoint where Google will post the JWT in your config:
 
 ```elixir
-
 # /config/runtime.exs
 config :my_app,
   google_client_id:
@@ -33,6 +50,8 @@ config :my_app,
 ```
 
 > you can create an `.env` file where you `export GOOGLE_CLIENT_ID` and run `source .env`.
+
+## The UI
 
 Firstly, the UI. Define a link next to the "Register" and "Log In" links:
 
@@ -158,6 +177,15 @@ scope "/", MyAppWeb do
 end
 ```
 
+## CSRF Protection:
+
+When Google One Tap POSTs the credential to your "/google_auth" endpoint, a malicious site could try to forge such a request.
+The plug checks that a CSRF token set in a cookie (by your app) matches the one sent in the POST params.
+This ensures the POST is coming from your own frontend, not a third-party site.
+
+Google's Recommendation:
+Google recommends verifying the CSRF token for One Tap and Sign-In With Google flows.
+
 ```elixir
 # plug_google_auth.ex
 
@@ -208,13 +236,23 @@ defmodule MyAppWeb.PlugGoogleAuth do
 end
 ```
 
-This POST endpoint is controlled by a controller:
+## JWT verification
+
+This POST endpoint is served by a controller where you:
+
+- Verify the JWT against Google public certs
+- If succesfull, check if the user exists or create him,
+- We reuse the `UserAuth` module:
+    - Creates a session token for the user.
+    - Stores the token in the session and (optionally) in a signed "remember me" cookie.
+    - Redirects the user to the intended page or a default after login.
+
 
 ```elixir
-defmodule LiveFlightWeb.OneTapController do
-  use LiveFlightWeb, :controller
-  alias LiveFlightWeb.UserAuth
-  alias LiveFlight.Accounts
+defmodule MyAppWeb.OneTapController do
+  use MyAppWeb, :controller
+  alias MyAppWeb.UserAuth
+  alias MyApp.Accounts
 
   def handle(conn, %{"credential" => jwt} = _params) do
     case ExGoogleCerts.verified_identity(%{jwt: jwt})  do

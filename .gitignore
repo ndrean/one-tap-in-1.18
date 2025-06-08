@@ -38,6 +38,9 @@ npm-debug.log
 .cred.exs
 .formatter.exs
 
+*/.DS_Store
+.DS_Store
+
 /test/
 .env
 .cred.json
