@@ -1,0 +1,36 @@
+name: live_flight
+
+services:
+  pg:
+    image: postgres:17
+    container_name: pg17
+
+    environment:
+      # PostgreSQL environment variables are in the form POSTGRES_*
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: live_flight_dev
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    # volumes:
+    #   - pgdata:/var/lib/postgresql/data
+
+    ports:
+      - "5432:5432"
+
+    tmpfs:
+      - /var/lib/postgresql/data
+      - /tmp
+
+    command:
+      - -c
+      - listen_addresses=*
+      - -c
+      - wal_level=logical
+      - -c
+      - max_wal_senders=10

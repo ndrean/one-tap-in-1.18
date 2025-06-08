@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@maptiler/leaflet-maptilersdk": "^4.1.0",
+    "@maptiler/sdk": "^3.3.0",
+    "leaflet": "^1.9.4",
+    "leaflet-control-geocoder": "^3.2.0",
+    "leaflet-markers-canvas": "^0.2.2"
+  }
+}
