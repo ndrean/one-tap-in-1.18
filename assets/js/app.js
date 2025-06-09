@@ -1,41 +1,48 @@
 import "phoenix_html";
-import {Socket} from "phoenix";
-import { LiveSocket } from "phoenix_live_view";
-import { MapHook } from "./mapHook.js";
-import topbar from "../vendor/topbar.cjs";
 
-  console.log("APP.JS LOADED--------");
-//   const [{ Socket }, { LiveSocket }, topbar, {MapHook}, {OneTapHook}] = await Promise.all([
-//   import("phoenix"),
-//   import("phoenix_live_view"),
-//   import("../vendor/topbar.cjs"),
-//   import("./mapHook.js"),
-//   import("./oneTapHook.js"),
-// ]);
-const csrfToken = document
+async function startApp() {
+  const [{ Socket }, { LiveSocket }, topbar, {MapHook}] = await Promise.all([
+  import("phoenix"),
+  import("phoenix_live_view"),
+  import("../vendor/topbar.cjs"),
+  import("./mapHook.js"),
+  ]);
+
+  const csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
   
+  
+  const liveSocket = new LiveSocket("/live", Socket, {
+    longPollFallbackMs: 2500,
+    params: { _csrf_token: csrfToken },
+    hooks: { MapHook: MapHook({ mapID: "map" }) },
+    });
 
-const liveSocket = new LiveSocket("/live", Socket, {
-  longPollFallbackMs: 2500,
-  params: { _csrf_token: csrfToken },
-  hooks: { MapHook: MapHook({ mapID: "map" }) },
-});
+  // connect if there are any LiveViews on the page
+  liveSocket.connect();
+  configTopbar(topbar)
 
-// Show progress bar on live navigation and form submits
-topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
-window.addEventListener("phx:page-loading-start", (_info) => topbar.show(300));
-window.addEventListener("phx:page-loading-stop", (_info) => topbar.hide());
+  // expose liveSocket on window for web console debug logs and latency simulation:
+  // >> liveSocket.enableDebug()
+  // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
+  // >> liveSocket.disableLatencySim()
+  window.liveSocket = liveSocket;
+  
 
-// connect if there are any LiveViews on the page
-liveSocket.connect();
+}
 
-// expose liveSocket on window for web console debug logs and latency simulation:
-// >> liveSocket.enableDebug()
-// >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
-// >> liveSocket.disableLatencySim()
-window.liveSocket = liveSocket;
+startApp().then(()=> console.log("APP.JS loaded--------"))
+
+function configTopbar(topbar) {
+  // Show progress bar on live navigation and form submits
+  topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
+  window.addEventListener("phx:page-loading-start", (_info) => topbar.show(300));
+  window.addEventListener("phx:page-loading-stop", (_info) => topbar.hide());
+}
+
+
+
 
 // The lines below enable quality of life phoenix_live_reload
 // development features:

@@ -3,6 +3,8 @@ defmodule LiveFlight.Application do
   # for more information on OTP Applications
   @moduledoc false
 
+  alias LiveFlight.Accounts.{User, UserToken}
+
   use Application
 
   @impl true
@@ -10,8 +12,18 @@ defmodule LiveFlight.Application do
     children = [
       LiveFlightWeb.Telemetry,
       LiveFlight.Repo,
-      {DNSCluster, query: Application.get_env(:live_flight, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: LiveFlight.PubSub},
+      {EctoWatch,
+       repo: LiveFlight.Repo,
+       pub_sub: LiveFlight.PubSub,
+       watchers: [
+         {User, :inserted},
+         {User, :updated},
+         {UserToken, :inserted},
+         {UserToken, :updated}
+       ]},
+      LiveFlight.Accounts.Notifier,
+      {DNSCluster, query: Application.get_env(:live_flight, :dns_cluster_query) || :ignore},
       # Start a worker by calling: LiveFlight.Worker.start_link(arg)
       # {LiveFlight.Worker, arg},
       # Start to serve requests, typically the last entry

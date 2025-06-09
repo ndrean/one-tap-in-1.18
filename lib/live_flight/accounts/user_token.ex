@@ -1,4 +1,5 @@
 defmodule LiveFlight.Accounts.UserToken do
+  @moduledoc false
   use Ecto.Schema
   import Ecto.Query
   alias LiveFlight.Accounts.UserToken

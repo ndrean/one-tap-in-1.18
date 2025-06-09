@@ -39,6 +39,7 @@ defmodule LiveFlight.MixProject do
       {:joken, "~> 2.6"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
+      {:ecto_watch, "~> 0.13.2"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_view, "~> 1.0.9"},
       {:swoosh, "~> 1.16"},

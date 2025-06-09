@@ -69,6 +69,11 @@ defmodule LiveFlightWeb.Router do
       on_mount: [{LiveFlightWeb.UserAuth, :require_authenticated}] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
+
+      live "/posts", PostLive.Index, :index
+      live "/posts/new", PostLive.Form, :new
+      live "/posts/:id", PostLive.Show, :show
+      live "/posts/:id/edit", PostLive.Form, :edit
     end
 
     post "/users/update-password", UserSessionController, :update_password

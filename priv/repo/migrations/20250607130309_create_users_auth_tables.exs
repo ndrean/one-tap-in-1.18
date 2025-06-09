@@ -1,10 +1,12 @@
 defmodule LiveFlight.Repo.Migrations.CreateUsersAuthTables do
   use Ecto.Migration
 
+  @disable_ddl_transaction true
   def change do
-    execute "CREATE EXTENSION IF NOT EXISTS citext", ""
+    execute "CREATE EXTENSION IF NOT EXISTS citext;"
+    execute "CREATE EXTENSION IF NOT EXISTS tcn;"
 
-    create table(:users) do
+    create table("users") do
       add :email, :citext, null: false
       add :hashed_password, :string
       add :confirmed_at, :utc_datetime
@@ -14,8 +16,8 @@ defmodule LiveFlight.Repo.Migrations.CreateUsersAuthTables do
 
     create unique_index(:users, [:email])
 
-    create table(:users_tokens) do
-      add :user_id, references(:users, on_delete: :delete_all), null: false
+    create table("users_tokens") do
+      add :user_id, references("users", on_delete: :delete_all), null: false
       add :token, :binary, null: false
       add :context, :string, null: false
       add :sent_to, :string
@@ -24,7 +26,7 @@ defmodule LiveFlight.Repo.Migrations.CreateUsersAuthTables do
       timestamps(type: :utc_datetime, updated_at: false)
     end
 
-    create index(:users_tokens, [:user_id])
-    create unique_index(:users_tokens, [:context, :token])
+    create index("users_tokens", [:user_id])
+    create unique_index("users_tokens", [:context, :token])
   end
 end
