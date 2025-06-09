@@ -1,14 +1,14 @@
-# LiveFlight
+# Add Google One Tap to the Authentication Generated Code
 
 Add Google One Tap into the Phoenix 1.18 authentication process.
 
-It has been installed with:
+We use the latest PHoenix version. It has been installed with:
 
 ```sh
 mix archive.install hex phx_new 1.8.0-rc.3 --force
 ```
 
-> this `phx.gen.auth` ships a magic link support for login and registration.
+>  `phx.gen.auth` ships a magic link support for login and registration.
 
 Source: <https://www.phoenixframework.org/blog/phoenix-1-8-released>
 
@@ -17,6 +17,8 @@ Source: <https://www.phoenixframework.org/blog/phoenix-1-8-released>
 Use the Phoenix code generator:
 
 ```sh
+mix phx.new my_app
+
 mix phx.gen.auth Accounts User users
 ```
 
@@ -31,6 +33,8 @@ Path:
 - Application type: Web Application
 - Authorized JavaScript origins: http://localhost:4000
 - Authorized redirect URIs: http://localhost:4000:google_auth 
+
+![Screenshot 2025-06-08 at 21 54 04](https://github.com/user-attachments/assets/3f284b5c-f3eb-465c-a114-81b2e0495a9f)
 
 ### App config
 
@@ -87,6 +91,10 @@ Firstly, the UI. Define a link next to the "Register" and "Log In" links:
       <% end %>
     </ul>
 ```
+
+You see the screen below:
+
+![Screenshot 2025-06-08 at 19 37 31](https://github.com/user-attachments/assets/d4c7a94a-b95c-4edb-94cf-843b2265e426)
 
 Add the corresponding route:
 
