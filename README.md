@@ -1,16 +1,18 @@
 # Add Google One Tap to the Authentication Generated Code
 
-Add Google One Tap into the Phoenix 1.18 authentication process.
+The latest 1.18 is in RC and `phx.gen.auth` ships with magic links enabled for login and registration (among other goodies).
 
-We use the latest PHoenix version. It has been installed with:
+Source: <https://www.phoenixframework.org/blog/phoenix-1-8-released>
+
+
+The latest Phoenix version has been installed  - at the time of writting - with:
 
 ```sh
 mix archive.install hex phx_new 1.8.0-rc.3 --force
 ```
 
->  `phx.gen.auth` ships a magic link support for login and registration.
+We want to add thee Google One tap login into the authentication funnel.
 
-Source: <https://www.phoenixframework.org/blog/phoenix-1-8-released>
 
 ## Code generator:
 
