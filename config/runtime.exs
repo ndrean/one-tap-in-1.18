@@ -34,7 +34,8 @@ config :live_flight,
       environment variable GOOGLE_CLIENT_SECRET is missing.
       You can generate one by going to https://console.cloud.google.com/apis/credentials
       and creating a new OAuth 2.0 Client ID.
-      """)
+      """),
+  maptiler_key: System.get_env("MAPTILER_KEY")
 
 if config_env() == :prod do
   database_url =

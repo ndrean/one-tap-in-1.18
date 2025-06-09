@@ -12,9 +12,11 @@ export async function initMap(mapID) {
     referrerPolicy: "origin",
   });
 
+  const maptilerKey = document.getElementById("map-hook").dataset.maptilerKey;
+
   map.setView([0, 0], 0);
   const maptLayer = new MaptilerLayer({
-    apiKey: "m2DAXGaIsk6bh8uMAETL",
+    apiKey: maptilerKey,
     crossOrigin: "anonymous",
     style: "https://api.maptiler.com/maps/streets/style.json",
   });
