@@ -4,7 +4,7 @@ defmodule LiveFlightWeb.UserLive.OneTap do
   def render(assigns) do
     ~H"""
     <div id="one-tap-login" phx-update="ignore">
-      <script src="https://accounts.google.com/gsi/client" async>
+      <script nonce={@csp_nonce} src="https://accounts.google.com/gsi/client" async>
       </script>
 
       <div
@@ -39,11 +39,15 @@ defmodule LiveFlightWeb.UserLive.OneTap do
     google_client_id =
       Application.fetch_env!(:live_flight, :google_client_id)
 
+    csp_nonce = Process.get(:nonce)
+
     socket =
       assign(socket,
         g_cb_uri: callback_uri,
-        g_client_id: google_client_id
+        g_client_id: google_client_id,
+        csp_nonce: csp_nonce
       )
+
 
     {:ok, socket}
   end

@@ -3,17 +3,46 @@ defmodule LiveFlightWeb.Router do
 
   import LiveFlightWeb.UserAuth
 
+  def put_csp(conn, _) do
+    csp_nonce = csp_nonce()
+    conn
+    |> put_resp_header(
+      "content-security-policy",
+      """
+      default-src 'self' https://accounts.google.com;
+      script-src https://accounts.google.com http://localhost:4000 'nonce-#{csp_nonce}';
+      img-src 'self' data:;
+      style-src 'self' 'unsafe-inline' https://accounts.google.com;
+      frame-ancestors 'self' https://accounts.google.com;
+      """
+      |> String.replace("\n", " ")
+    )
+    |> assign(:csp_nonce, csp_nonce)
+  end
+
+  defp csp_nonce do
+    nonce = 24
+    |> :crypto.strong_rand_bytes()
+    |> Base.encode64(padding: false)
+
+    Process.put(:nonce, nonce)
+    nonce
+  end
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, html: {LiveFlightWeb.Layouts, :root}
+    plug :put_csp
+    plug :put_secure_browser_headers
     plug :protect_from_forgery
-    plug :put_secure_browser_headers, %{"referrer-policy" => "no-referrer-when-downgrade"}
     plug :fetch_current_scope_for_user
   end
 
   pipeline :google_auth do
+    plug :put_csp
+    plug :put_secure_browser_headers, %{"referrer-policy" => "no-referrer-when-downgrade"}
     plug LiveFlightWeb.PlugGoogleAuth
   end
 

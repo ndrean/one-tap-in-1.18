@@ -14,9 +14,10 @@
       type="text/javascript"
       src={~p"/assets/js/app.js"}
       type="module"
+      nonce={@csp_nonce}
     >
     </script>
-    <script>
+    <script nonce={@csp_nonce}>
       (() => {
         const setTheme = (theme) => {
           if (theme === "system") {
@@ -36,6 +37,7 @@
     </script>
   </head>
   <body>
+    <%= @csp_nonce %>
     <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
       <%= if @current_scope do %>
         <li>
